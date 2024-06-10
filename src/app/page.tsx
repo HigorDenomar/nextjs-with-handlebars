@@ -9,7 +9,7 @@ import { FormComponent } from './_components/form';
 export default function Home() {
   const [html, setHtml] = useState('')
 
-  function handleGenerate() {
+  const handleGenerate = () => {
     const content = generateHTML(<FormComponent />)
 
     setHtml(content)
