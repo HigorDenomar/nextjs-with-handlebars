@@ -25,26 +25,20 @@ export async function POST(request: Request) {
   try {
     const content = templateSchema.parse(await request.json())
 
-    const template = handlebars.compile(
-      await fs.readFile(
-        resolve(process.cwd(), 'src/app/api/build/_templates/index.hbs'),
-        'utf8'
-      )
+    const templateDir = resolve(
+      process.cwd(),
+      'src/app/api/build/_templates/themes',
+      content.theme,
+      'index.hbs'
     )
+
+    const template = handlebars.compile(await fs.readFile(templateDir, 'utf8'))
 
     const html = template(content)
 
     const css = await generateCSSfromHTML(html)
 
-    await handleToCreateFiles(html, css)
-
-    // await fetch('http://localhost:3333', {
-    //   method: 'POST',
-    //   body: JSON.stringify({
-    //     html,
-    //     css,
-    //   }),
-    // })
+    await handleToCreateFiles({ html, css, id: content.theme })
 
     return Response.json({ css, html })
   } catch (error) {
@@ -76,8 +70,19 @@ async function generateCSSfromHTML(html: string) {
   return css
 }
 
-async function handleToCreateFiles(html: string, css: string) {
-  const outDir = resolve(process.cwd(), 'src/app/api/build/_output')
+/**
+ * Salva os arquivos (pode ser uma requisição post)
+ **/
+async function handleToCreateFiles({
+  html,
+  css,
+  id,
+}: {
+  html: string
+  css: string
+  id: string
+}) {
+  const outDir = resolve(process.cwd(), 'sites', id)
 
   await fs.mkdir(outDir, {
     recursive: true,
@@ -90,4 +95,13 @@ async function handleToCreateFiles(html: string, css: string) {
   await fs.writeFile(resolve(outDir, 'styles.css'), css, {
     encoding: 'utf8',
   })
+
+  const script = await fs.readFile(
+    resolve(
+      process.cwd(),
+      `src/app/api/build/_templates/themes/${id}/script.js`
+    ),
+    'utf-8'
+  )
+  await fs.writeFile(resolve(outDir, 'script.js'), script)
 }

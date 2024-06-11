@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ seo.title }}</title>
+    <meta name="description" content="{{ seo.description }}">
+    <link rel="stylesheet" href="./styles.css">
+  </head>
+
+  <body class="p-4">
+    <div class="p-4 flex flex-col gap-4">
+      <h1 class="bg-primary">{{ content.message }}</h1>
+
+      <ul class="grid grid-cols-2">
+        {{#each content.list }}
+          <li>{{ this }}</li>
+        {{/each}}
+      </ul>
+
+      <pre id="profile"></pre>
+    </div>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

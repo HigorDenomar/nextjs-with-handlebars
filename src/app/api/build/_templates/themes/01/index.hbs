@@ -9,17 +9,18 @@
   </head>
 
   <body class="p-4">
-  <div class="p-4 flex flex-col gap-4">
-    <h1 class="bg-primary">{{ content.message }}</h1>
+    <div class="p-4 flex flex-col gap-4">
+      <h1 class="bg-primary">{{ content.message }}</h1>
 
-    <ul>
-      {{#each content.list }}
-        <li>{{ this }}</li>
-      {{/each}}
-    </ul>
-  </div>
+      <ul class="grid grid-cols-2">
+        {{#each content.list }}
+          <li>{{ this }}</li>
+        {{/each}}
+      </ul>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="../scripts/{{ theme }}.js"></script>
+      <pre id="profile"></pre>
+    </div>
+
+    <script src="./script.js"></script>
   </body>
 </html>
