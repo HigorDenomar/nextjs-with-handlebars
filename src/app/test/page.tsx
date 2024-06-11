@@ -2,7 +2,7 @@ export default async function TestPage() {
   const response = await fetch('http://localhost:3000/api/build', {
     method: 'POST',
     body: JSON.stringify({
-      "seo": {
+      seo: {
         "title": "Título bem bacaninha",
         "description": "Descrição bem legal"
       },
@@ -20,8 +20,6 @@ export default async function TestPage() {
   })
 
   const data = await response.json()
-
-  console.log(data)
 
   return (
     <main className="">

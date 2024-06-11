@@ -493,52 +493,15 @@ video {
   --tw-contain-layout:  ;
   --tw-contain-paint:  ;
   --tw-contain-style:  ;
-}
-      .mt-5 {
-  margin-top: 1.25rem;
-}
-      .flex {
+} .flex {
   display: flex;
-}
-      .w-full {
-  width: 100%;
-}
-      .max-w-2xl {
-  max-width: 42rem;
-}
-      .flex-col {
+} .flex-col {
   flex-direction: column;
-}
-      .items-center {
-  align-items: center;
-}
-      .justify-center {
-  justify-content: center;
-}
-      .gap-3 {
-  gap: 0.75rem;
-}
-      .rounded-lg {
-  border-radius: 0.5rem;
-}
-      .border {
-  border-width: 1px;
-}
-      .p-24 {
-  padding: 6rem;
-}
-      .p-4 {
+} .gap-4 {
+  gap: 1rem;
+} .bg-primary {
+  --tw-bg-opacity: 1;
+  background-color: rgb(229 131 162 / var(--tw-bg-opacity));
+} .p-4 {
   padding: 1rem;
 }
-      .text-neutral {
-  --tw-text-opacity: 1;
-  color: rgb(93 117 141 / var(--tw-text-opacity));
-}
-  
-      . {}
-.p-4 {}
-.flex {}
-.flex-col {}
-.gap-4 {}
-.bg-primary {}
-    
