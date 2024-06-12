@@ -1,8 +1,8 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+Este projeto visa testar a viabilidade de gerar sites estáticos com Handlebars e Next.js.
 
-## Getting Started
+## Executando o projeto
 
-First, run the development server:
+Para iniciar o servidor de desenvolvimento, execute um dos seguintes comandos:
 
 ```bash
 npm run dev
@@ -10,27 +10,61 @@ npm run dev
 yarn dev
 # or
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+O site estará disponível em [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Sobre o projeto
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+Na tela inicial, há um formulário que servirá de base para a geração de um site estático. Após preencher e enviar os dados, uma requisição é feita para [http://localhost:3000/api/build](http://localhost:3000/api/build).
 
-## Learn More
+Essa [rota](./src/app/api/build/route.ts) é responsável por processar os dados enviados pelo formulário e gerar um HTML, utilizando como base o [templete Handlebars](./src/app/api/build/_templates/themes/01/index.hbs).
 
-To learn more about Next.js, take a look at the following resources:
+```ts
+const content = templateSchema.parse(await request.json())
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+const templateDir = resolve(
+  process.cwd(),
+  'src/app/api/build/_templates/themes',
+  content.theme,
+  'index.hbs'
+)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+const template = handlebars.compile(await fs.readFile(templateDir, 'utf8'))
 
-## Deploy on Vercel
+const html = template(content)
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Em seguida, utilizamos o PostCSS pra gerar o CSS necessário para o nosso HTML.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```ts
+async function generateCSSfromHTML(html: string) {
+  const twBase = '@tailwind base; @tailwind components; @tailwind utilities;'
+
+  const { css } = await new Promise<postcss.Result<postcss.Root>>(
+    (resolve, reject) => {
+      postcss([
+        tailwind({
+          ...casarTheme,
+          content: [{ raw: html, extension: 'html' }],
+        }),
+      ])
+        .process(twBase, { from: undefined })
+        .then((result) => {
+          resolve(result)
+        })
+        .catch((error) => {
+          reject(error)
+        })
+    }
+  )
+
+  return css
+}
+```
+
+O resultado final é salvo em uma pasta `sites` na raiz do projeto, usando o valor de `theme` como nome da subpastas. Por exemplo, se o valor enviado para `theme` for '01', o output será:
+
+- `/sites/01/index.html`
+- `/sites/01/styles.css`
+- `/sites/01/script.js`
